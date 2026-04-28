@@ -1,6 +1,7 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { LuArrowLeftFromLine, LuSquarePen, LuTrash2 } from "react-icons/lu";
 import PageHeader from "@/app/components/PageHeader";
 import { useFetch } from "@/app/hooks/useFetch";
@@ -11,7 +12,11 @@ export default function RecipeDetail() {
 
   const { data: recipe, loading, refetch } = useFetch(`/api/recipes/${id}`);
 
+  const router = useRouter();
+
   const openEdit = () => {};
+  const openDelete = () => {};
+  const onCancel = () => {}; // Do inline???
 
   return (
     <div className="mt-8">
@@ -20,7 +25,12 @@ export default function RecipeDetail() {
         subtitle="Details of recipe"
         action={
           <div className="flex justify-between gap-4">
-            <button className="btn btn-outline gap-1" onClick={openEdit}>
+            <button
+              className="btn btn-outline gap-1"
+              onClick={() => {
+                router.back();
+              }}
+            >
               <LuArrowLeftFromLine />
               Back
             </button>
@@ -28,7 +38,7 @@ export default function RecipeDetail() {
               <LuSquarePen />
               Edit Recipe
             </button>
-            <button className="btn btn-error gap-1" onClick={openEdit}>
+            <button className="btn btn-error gap-1" onClick={openDelete}>
               <LuTrash2 />
               Delete Recipe
             </button>
