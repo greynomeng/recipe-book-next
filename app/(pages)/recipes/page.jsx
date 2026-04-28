@@ -18,7 +18,7 @@ export default function RecipesPage() {
       {/* Header */}
       <PageHeader
         title="Recipes"
-        subtitle={`${recipes?.length || 0} payees`}
+        subtitle={`${recipes?.length || 0} recipes`}
         action={
           <button className="btn btn-primary gap-1" onClick={openAdd}>
             <LuPlus />
