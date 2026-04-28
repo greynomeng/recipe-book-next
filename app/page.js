@@ -11,6 +11,7 @@ export default function Home() {
           width={600}
           height={500}
           className="max-w-xl rounded-lg shadow-2xl"
+          loading="eager"
         />
         <div>
           <h1 className="text-5xl font-bold">Recipes!</h1>
