@@ -12,6 +12,8 @@ const RecipeCard = ({ recipe }) => {
                 src={`/images/${recipe.image}`}
                 className="h-full w-full object-cover"
                 alt="Recipe Picture"
+                width={300}
+                height={300}
               />
             )}
           </figure>
