@@ -1,8 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LuArrowLeftFromLine, LuSquarePen, LuTrash2 } from "react-icons/lu";
+import {
+  LuArrowLeftFromLine,
+  LuSquarePen,
+  LuTrash2,
+  LuCircle
+} from "react-icons/lu";
 import PageHeader from "@/app/components/PageHeader";
 import { useFetch } from "@/app/hooks/useFetch";
 
@@ -45,6 +51,97 @@ export default function RecipeDetail() {
           </div>
         }
       />
+
+      <div className="flex flex-row">
+        <div className="card bg-base-100 max-w-md shadow-sm mr-8">
+          <figure>
+            {recipe && recipe.image && (
+              <Image
+                src={`/images/${recipe.image}`}
+                alt="Recipe Picture"
+                width={600}
+                height={500}
+                loading="eager"
+              />
+            )}
+          </figure>
+          <div className="card-body">
+            <h2 className="card-title">{recipe?.name}</h2>
+            <p>{recipe?.description}</p>
+            {/* Prep */}
+            <div className="flex flex-row mt-4">
+              {recipe?.prepTime && (
+                <p>
+                  <span className="font-semibold">Prep:</span> {recipe.prepTime}
+                </p>
+              )}
+              {/* Cook */}
+              {recipe?.cookTime && (
+                <p>
+                  <span className="font-semibold">Cook:</span> {recipe.cookTime}
+                </p>
+              )}
+              {/* Serves */}
+              {recipe?.servings && (
+                <p>
+                  <span className="font-semibold">Serves:</span>{" "}
+                  {recipe.servings}
+                </p>
+              )}
+            </div>
+
+            {recipe?.cuisine && (
+              <p>
+                <span className="font-semibold">Cuisine:</span>{" "}
+                {recipe?.cuisine}
+              </p>
+            )}
+            <div className="mt-2">
+              {recipe?.notes && (
+                <div>
+                  <h2 className="card-title">Notes</h2>
+                  <p>{recipe.notes}</p>
+                </div>
+              )}
+            </div>
+            <div className="mt-2">
+              {recipe?.source && (
+                <div>
+                  <h2 className="card-title">Source</h2>
+                  <p>{recipe.source}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Ingredients */}
+        <div className="basis-1/4">
+          <p className="text-2xl font-semibold">Ingredients</p>
+          <ul className="list">
+            {recipe?.ingredients &&
+              recipe.ingredients.map((item, index) => (
+                <li
+                  className="list-row items-center text-base"
+                  key={`${item}-${index}`}
+                >
+                  <LuCircle /> {item}
+                </li>
+              ))}
+          </ul>
+        </div>
+        {/* Instructions */}
+        <div className="basis-1/2">
+          <p className="text-2xl font-semibold">Instructions</p>
+          <ul className="list">
+            {recipe?.instructions &&
+              recipe?.instructions.map((item, index) => (
+                <li className="list-row text-base" key={`${item}-${index}`}>
+                  {index + 1}. {item}
+                </li>
+              ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
