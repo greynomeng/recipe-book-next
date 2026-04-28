@@ -14,6 +14,7 @@ const RecipeCard = ({ recipe }) => {
                 alt="Recipe Picture"
                 width={300}
                 height={300}
+                loading="eager"
               />
             )}
           </figure>
