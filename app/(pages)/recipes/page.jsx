@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import PageHeader from "@/app/components/PageHeader";

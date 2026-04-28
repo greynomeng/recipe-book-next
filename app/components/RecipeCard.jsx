@@ -1,0 +1,31 @@
+import Link from "next/link";
+import Image from "next/image";
+
+const RecipeCard = ({ recipe }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className={"card bg-base-100 lg:w-96 md:64 shadow-sm"}>
+        <Link href={`/recipes/${recipe._id.toString()}`}>
+          <figure className="max-h-60">
+            {recipe.image && (
+              <Image
+                src={`/images/${recipe.image}`}
+                className="h-full w-full object-cover"
+                alt="Recipe Picture"
+              />
+            )}
+          </figure>
+        </Link>
+
+        <div className="card-body">
+          <Link href={`/recipes/${recipe._id.toString()}`}>
+            <h2 className="card-title text-blue-400">{recipe.name}</h2>
+          </Link>
+          <p>{recipe.description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RecipeCard;
