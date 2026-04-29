@@ -37,9 +37,17 @@ export async function apiCall(url, method = "GET", body = null) {
     method,
     headers: { "Content-Type": "application/json" }
   };
-  if (body) opts.body = JSON.stringify(body);
+
+  if (body) {
+    opts.body = JSON.stringify(body);
+  }
+
   const res = await fetch(url, opts);
+  // console.log("res:", res);
   const json = await res.json();
-  if (!json.success) throw new Error(json.error || "Request failed");
+  console.log("json:", json);
+  if (!json.success) {
+    throw new Error(json.error || "Request failed");
+  }
   return json.data;
 }

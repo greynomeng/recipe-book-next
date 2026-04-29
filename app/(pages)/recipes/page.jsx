@@ -1,12 +1,16 @@
 "use client";
 
-import PageHeader from "@/app/components/PageHeader";
 import { useState } from "react";
-import { LuPlus } from "react-icons/lu";
-import { useFetch } from "@/app/hooks/useFetch";
+import Image from "next/image";
+import Link from "next/link";
+import { LuSquarePen, LuTrash2, LuPlus } from "react-icons/lu";
+
+import { useFetch, apiCall } from "@/app/hooks/useFetch";
+
 import Modal, { openModal } from "@/app/components/Modal";
+import PageHeader from "@/app/components/PageHeader";
 import RecipeForm from "@/app/components/RecipeForm";
-import RecipeCard from "@/app/components/RecipeCard";
+import DeleteConfirm from "@/app/components/DeleteConfirm";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 import EmptyState from "@/app/components/EmptyState";
 
@@ -18,6 +22,22 @@ export default function RecipesPage() {
   const openAdd = () => {
     setSelected(null);
     openModal("recipe-modal");
+  };
+
+  const openEdit = (r) => {
+    setSelected(r);
+    openModal("recipe-modal");
+  };
+
+  const openDelete = (r) => {
+    console.log("openDelete");
+    setSelected(r);
+    openModal("delete-recipe-modal");
+  };
+
+  const handleDelete = async () => {
+    await apiCall(`/api/recipes/${selected?._id}`, "DELETE");
+    refetch();
   };
 
   return (
@@ -53,13 +73,55 @@ export default function RecipesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 w-full">
             {recipes &&
               recipes.map((recipe) => (
-                <RecipeCard key={recipe._id.toString()} recipe={recipe} />
+                <div
+                  key={recipe._id}
+                  className={"card bg-base-100 lg:w-96 md:64 shadow-sm"}
+                >
+                  <Link href={`/recipes/${recipe._id.toString()}`}>
+                    <figure className="max-h-60">
+                      {recipe.image && (
+                        <Image
+                          src={`/images/${recipe.image}`}
+                          className="h-full w-full object-cover"
+                          alt="Recipe Picture"
+                          width={300}
+                          height={300}
+                          loading="eager"
+                        />
+                      )}
+                    </figure>
+                  </Link>
+
+                  <div className="card-body">
+                    <Link href={`/recipes/${recipe._id}`}>
+                      <h2 className="card-title text-blue-400">
+                        {recipe.name}
+                      </h2>
+                    </Link>
+                    <p>{recipe.description}</p>
+                  </div>
+
+                  <div className="card-actions flex gap-1 justify-end p-2 opacity-0 hover:opacity-90">
+                    <button
+                      className="btn btn-ghost btn-xs text-primary"
+                      onClick={() => openEdit(recipe)}
+                    >
+                      <LuSquarePen />
+                    </button>
+                    <button
+                      className="btn btn-ghost btn-xs text-error"
+                      onClick={() => openDelete(recipe)}
+                    >
+                      <LuTrash2 />
+                    </button>
+                  </div>
+                </div>
               ))}
           </div>
         </div>
       )}
 
-      <Modal id="recipe-modal" title={"Add Recipe"}>
+      <Modal id="recipe-modal" title={selected ? "Edit Recipe" : "Add Recipe"}>
         <RecipeForm
           recipe={selected}
           onSuccess={() => {
@@ -69,6 +131,13 @@ export default function RecipesPage() {
           onCancel={() => closeModal("recipe-modal")}
         />
       </Modal>
+
+      <DeleteConfirm
+        id="delete-recipe-modal"
+        title="Delete Recipe"
+        message={`Delete ${selected?.name} ? This action cannot be undone.`}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
