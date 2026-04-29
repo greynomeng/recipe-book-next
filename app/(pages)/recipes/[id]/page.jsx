@@ -47,14 +47,6 @@ export default function RecipeDetail() {
               <LuArrowLeftFromLine />
               Back
             </button>
-            <button className="btn btn-success gap-1" onClick={openEdit}>
-              <LuSquarePen />
-              Edit Recipe
-            </button>
-            <button className="btn btn-error gap-1" onClick={openDelete}>
-              <LuTrash2 />
-              Delete Recipe
-            </button>
           </div>
         }
       />

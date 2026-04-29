@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { LuSquarePen, LuTrash2 } from "react-icons/lu";
 
 const RecipeCard = ({ recipe }) => {
   return (
@@ -25,6 +26,21 @@ const RecipeCard = ({ recipe }) => {
             <h2 className="card-title text-blue-400">{recipe.name}</h2>
           </Link>
           <p>{recipe.description}</p>
+        </div>
+
+        <div className="card-actions flex gap-1 justify-end p-2 opacity-0 hover:opacity-90">
+          <button
+            className="btn btn-ghost btn-xs text-primary"
+            onClick={() => openEdit(recipe)}
+          >
+            <LuSquarePen />
+          </button>
+          <button
+            className="btn btn-ghost btn-xs text-error"
+            onClick={() => openDelete(recipe)}
+          >
+            <LuTrash2 />
+          </button>
         </div>
       </div>
     </div>
