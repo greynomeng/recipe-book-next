@@ -1,3 +1,11 @@
+# TODOs
+- ## Recipe New/Edit/Delete
+- Build RecipeForm
+- Build Moddal
+- Delete confirmation modal
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
