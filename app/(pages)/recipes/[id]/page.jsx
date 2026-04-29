@@ -11,18 +11,25 @@ import {
 } from "react-icons/lu";
 import PageHeader from "@/app/components/PageHeader";
 import { useFetch } from "@/app/hooks/useFetch";
+import Modal, { openModal } from "@/app/components/Modal";
+import RecipeForm from "@/app/components/RecipeForm";
+import { useState } from "react";
 
 export default function RecipeDetail() {
   const params = useParams();
   const id = params.id;
 
   const { data: recipe, loading, refetch } = useFetch(`/api/recipes/${id}`);
+  const [selected, setSelected] = useState(null);
 
   const router = useRouter();
 
-  const openEdit = () => {};
+  const openEdit = (r) => {
+    setSelected(r);
+    openModal("recipe-modal");
+  };
+
   const openDelete = () => {};
-  const onCancel = () => {}; // Do inline???
 
   return (
     <div className="mt-8">
@@ -142,6 +149,17 @@ export default function RecipeDetail() {
           </ul>
         </div>
       </div>
+
+      <Modal id="recipe-modal" title={recipe ? "Edit Recipe" : "Add Recipe"}>
+        <RecipeForm
+          recipe={recipe}
+          onSuccess={() => {
+            closeModal("recipe-modal");
+            refetch();
+          }}
+          onCancel={() => closeModal("recipe-modal")}
+        />
+      </Modal>
     </div>
   );
 }
