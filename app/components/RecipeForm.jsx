@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   const isEdit = !!recipe;
@@ -13,6 +13,7 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   const [error, setError] = useState(null);
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const fileInputRef = useRef(null);
 
   function set(k, v) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -28,9 +29,56 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     }
   }, [recipe]);
 
-  const handleSubmit = () => {};
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Please select an image file"
+        }));
+        return;
+      }
 
-  // console.log("form:", form);
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Image must be less than 5MB"
+        }));
+        return;
+      }
+
+      // Save file for uploading later
+      setFile(file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setImagePreview(base64String);
+        // Only need file name here
+        // setFormData((prev) => ({ ...prev, image: base64String }));
+        setForm((prev) => ({ ...prev, image: file.name }));
+      };
+      reader.readAsDataURL(file);
+      // if (errors.image) {
+      //   setErrors((prev) => ({ ...prev, image: "" }));
+      // }
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview("");
+    setFile(null);
+    // Clear the input value properly
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSubmit = () => {};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,15 +98,33 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
         />
       </div>
 
-      {/* <label className="label font-semibold">Recipe Image</label>
-      <input
-        type="file"
-        accept="image/*"
-        value={form.name}
-        onChange={(e) => set("image", e.target.value)}
-        className="input input-bordered w-full mb-2"
-        placeholder="Enter recipe name..."
-      /> */}
+      <div className="form-control">
+        <label className="label font-semibold">Recipe Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          className="file-input w-full mb-2"
+          placeholder="Enter recipe name..."
+        />
+        {imagePreview && (
+          <div className="mt-4 relative">
+            <img
+              src={imagePreview}
+              alt="Recipe preview"
+              className="w-full h-64 object-cover rounded-lg"
+            />
+            <button
+              type="button"
+              onClick={removeImage}
+              className="btn btn-error btn-sm absolute top-2 right-2"
+            >
+              Remove Image
+            </button>
+          </div>
+        )}
+      </div>
     </form>
   );
 }
