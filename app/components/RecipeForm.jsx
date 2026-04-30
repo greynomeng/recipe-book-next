@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import { LuSave, LuX } from "react-icons/lu";
 
 export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   const isEdit = !!recipe;
@@ -78,7 +80,10 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     }
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("isEdit:", isEdit);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -110,10 +115,13 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
         />
         {imagePreview && (
           <div className="mt-4 relative">
-            <img
+            <Image
               src={imagePreview}
               alt="Recipe preview"
-              className="w-full h-64 object-cover rounded-lg"
+              className="w-full object-cover rounded-lg"
+              width={50}
+              height={50}
+              loading="eager"
             />
             <button
               type="button"
@@ -123,6 +131,24 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
               Remove Image
             </button>
           </div>
+        )}
+      </div>
+      {/* Action buttons */}
+      <div className="flex gap-3 pt-2">
+        <button
+          type="submit"
+          className="btn btn-primary flex-1"
+          disabled={loading}
+        >
+          {loading && <span className="loading loading-spinner loading-sm" />}
+          <LuSave />
+          {isEdit ? "Update" : "Add"} Recipe
+        </button>
+        {onCancel && (
+          <button type="button" className="btn btn-ghost" onClick={onCancel}>
+            <LuX />
+            Cancel
+          </button>
         )}
       </div>
     </form>

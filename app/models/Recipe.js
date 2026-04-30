@@ -2,18 +2,18 @@ import mongoose from "mongoose";
 
 const RecipeSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true },
-    image: { type: String },
-    description: { type: String },
-    notes: { type: String },
-    ingredients: { type: [String], default: [] },
-    instructions: { type: [String], default: [] },
-    prepTime: { type: String },
-    cookTime: { type: String },
-    servings: { type: String },
-    cuisine: { type: String },
-    tags: { type: [String], default: [] },
-    source: { type: String }
+    name: { type: String, required: true, unique: true, trim: true },
+    image: { type: String, trim: true },
+    description: { type: String, trim: true },
+    notes: { type: String, trim: true },
+    ingredients: { type: [String], default: [], trim: true },
+    instructions: { type: [String], default: [], trim: true },
+    prepTime: { type: String, trim: true },
+    cookTime: { type: String, trim: true },
+    servings: { type: String, trim: true },
+    cuisine: { type: String, trim: true },
+    tags: { type: [String], default: [], trim: true },
+    source: { type: String, trim: true }
   },
   {
     timestamps: true,

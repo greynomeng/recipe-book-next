@@ -7,7 +7,7 @@ import { LuSquarePen, LuTrash2, LuPlus } from "react-icons/lu";
 
 import { useFetch, apiCall } from "@/app/hooks/useFetch";
 
-import Modal, { openModal } from "@/app/components/Modal";
+import Modal, { openModal, closeModal } from "@/app/components/Modal";
 import PageHeader from "@/app/components/PageHeader";
 import RecipeForm from "@/app/components/RecipeForm";
 import DeleteConfirm from "@/app/components/DeleteConfirm";
