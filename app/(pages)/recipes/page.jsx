@@ -54,7 +54,7 @@ export default function RecipesPage() {
         }
       />
 
-      {/* Recipe cards */}
+      {/* Recipes */}
       {loading ? (
         <LoadingSpinner />
       ) : recipes?.length === 0 ? (
@@ -79,9 +79,18 @@ export default function RecipesPage() {
                 >
                   <Link href={`/recipes/${recipe._id.toString()}`}>
                     <figure className="max-h-60">
-                      {recipe.image && (
+                      {recipe.image ? (
                         <Image
                           src={`/images/${recipe.image}`}
+                          className="h-full w-full object-cover"
+                          alt="Recipe Picture"
+                          width={300}
+                          height={300}
+                          loading="eager"
+                        />
+                      ) : (
+                        <Image
+                          src="/default-recipe.png"
                           className="h-full w-full object-cover"
                           alt="Recipe Picture"
                           width={300}
@@ -123,6 +132,7 @@ export default function RecipesPage() {
 
       <Modal id="recipe-modal" title={selected ? "Edit Recipe" : "Add Recipe"}>
         <RecipeForm
+          key={selected?._id}
           recipe={selected}
           onSuccess={() => {
             closeModal("recipe-modal");

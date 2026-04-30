@@ -54,9 +54,17 @@ export default function RecipeDetail() {
       <div className="flex flex-row">
         <div className="card bg-base-100 max-w-md shadow-sm mr-8">
           <figure>
-            {recipe && recipe.image && (
+            {recipe?.image ? (
               <Image
                 src={`/images/${recipe.image}`}
+                alt="Recipe Picture"
+                width={600}
+                height={500}
+                loading="eager"
+              />
+            ) : (
+              <Image
+                src="/default-recipe.png"
                 alt="Recipe Picture"
                 width={600}
                 height={500}
