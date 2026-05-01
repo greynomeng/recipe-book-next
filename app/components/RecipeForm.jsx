@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { LuSave, LuX } from "react-icons/lu";
+import { apiCall } from "../hooks/useFetch";
 
 export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   const isEdit = !!recipe;
@@ -10,11 +11,13 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     name: "",
     image: ""
   });
-  console.log("form:", form);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const fileInputRef = useRef(null);
 
   function set(k, v) {
@@ -82,7 +85,39 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("isEdit:", isEdit);
+
+    try {
+      setIsSubmitting(true);
+
+      let response;
+      if (isEdit) {
+        response = await apiCall(`/api/recipes/${recipe._id}`, "PUT", form);
+      } else {
+        response = await apiCall("/api/recipes", "POST", form);
+      }
+
+      if (file) {
+        handleImageUpload();
+      }
+    } catch (error) {
+      setError({ submit: error.message || "Failed to submit recipe" });
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!file) {
+      return;
+    }
+
+    const imageFormData = new FormData();
+    imageFormData.append("image", file);
+
+    await apiCall(
+      "/api/upload",
+      "POST",
+      imageFormData,
+      `"Content-Type": "multipart/form-data"`
+    );
   };
 
   return (
