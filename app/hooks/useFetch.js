@@ -33,19 +33,18 @@ export function useFetch(url, deps = []) {
 }
 
 export async function apiCall(url, method = "GET", body = null) {
+  const isFormData = body instanceof FormData;
+
   const opts = {
     method,
-    headers: { "Content-Type": "application/json" }
+    // Let the browser set Content-Type automatically for FormData
+    headers: isFormData ? {} : { "Content-Type": "application/json" },
+    body: isFormData ? body : body ? JSON.stringify(body) : null
   };
 
-  if (body) {
-    opts.body = JSON.stringify(body);
-  }
-
   const res = await fetch(url, opts);
-  // console.log("res:", res);
   const json = await res.json();
-  console.log("json:", json);
+
   if (!json.success) {
     throw new Error(json.error || "Request failed");
   }

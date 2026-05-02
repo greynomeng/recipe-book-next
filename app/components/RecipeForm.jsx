@@ -87,7 +87,7 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     e.preventDefault();
 
     try {
-      setIsSubmitting(true);
+      setLoading(true);
 
       let response;
       if (isEdit) {
@@ -99,8 +99,11 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
       if (file) {
         handleImageUpload();
       }
+      onSuccess();
     } catch (error) {
       setError({ submit: error.message || "Failed to submit recipe" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,12 +115,7 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     const imageFormData = new FormData();
     imageFormData.append("image", file);
 
-    await apiCall(
-      "/api/upload",
-      "POST",
-      imageFormData,
-      `"Content-Type": "multipart/form-data"`
-    );
+    await apiCall("/api/upload", "POST", imageFormData);
   };
 
   return (

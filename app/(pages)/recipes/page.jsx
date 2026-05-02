@@ -30,7 +30,6 @@ export default function RecipesPage() {
   };
 
   const openDelete = (r) => {
-    console.log("openDelete");
     setSelected(r);
     openModal("delete-recipe-modal");
   };
