@@ -119,71 +119,92 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="max-h-175 overflow-y-auto pr-2 space-y-4 w-full"
+    >
       {error && (
         <div className="alert alert-error py-2 text-sm">
           <span>{error}</span>
         </div>
       )}
-      <div className="form-control">
-        <label className="label font-semibold">Recipe Name *</label>
-        <input
-          type="text"
-          value={form.name}
-          onChange={(e) => set("name", e.target.value)}
-          className="input input-bordered w-full mb-2"
-          placeholder="Enter recipe name..."
-        />
-      </div>
 
-      <div className="form-control">
-        <label className="label font-semibold">Recipe Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          onChange={handleImageChange}
-          className="file-input w-full mb-2"
-          placeholder="Enter recipe name..."
-        />
-        {imagePreview && (
-          <div className="mt-4 relative">
-            <Image
-              src={imagePreview}
-              alt="Recipe preview"
-              className="w-full object-cover rounded-lg"
-              width={50}
-              height={50}
-              loading="eager"
+      {/* Grid 2 columns */}
+      <dev className="grid grid-cols-2 gap-4">
+        {/* Left column */}
+        <div>
+          <div className="form-control">
+            <label className="label font-semibold">Recipe Name *</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => set("name", e.target.value)}
+              className="input input-bordered w-full mb-2"
+              placeholder="Enter recipe name..."
             />
-            <button
-              type="button"
-              onClick={removeImage}
-              className="btn btn-error btn-sm absolute top-2 right-2"
-            >
-              Remove Image
-            </button>
           </div>
-        )}
-      </div>
-      {/* Action buttons */}
-      <div className="flex gap-3 pt-2">
-        <button
-          type="submit"
-          className="btn btn-primary flex-1"
-          disabled={loading}
-        >
-          {loading && <span className="loading loading-spinner loading-sm" />}
-          <LuSave />
-          {isEdit ? "Update" : "Add"} Recipe
-        </button>
-        {onCancel && (
-          <button type="button" className="btn btn-ghost" onClick={onCancel}>
-            <LuX />
-            Cancel
-          </button>
-        )}
-      </div>
+
+          <div className="form-control">
+            <label className="label font-semibold">Recipe Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="file-input w-full mb-2"
+              placeholder="Enter recipe name..."
+            />
+            {imagePreview && (
+              <div className="mt-4 relative">
+                <Image
+                  src={imagePreview}
+                  alt="Recipe preview"
+                  className="w-full object-cover rounded-lg"
+                  width={50}
+                  height={50}
+                  loading="eager"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="btn btn-error btn-sm absolute top-2 right-2"
+                >
+                  Remove Image
+                </button>
+              </div>
+            )}
+          </div>
+          {/* Action buttons */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              className="btn btn-primary flex-1"
+              disabled={loading}
+            >
+              {loading && (
+                <span className="loading loading-spinner loading-sm" />
+              )}
+              <LuSave />
+              {isEdit ? "Update" : "Add"} Recipe
+            </button>
+            {onCancel && (
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={onCancel}
+              >
+                <LuX />
+                Cancel
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Right column */}
+        <div>
+          <h3>Ingedients</h3>
+        </div>
+      </dev>
     </form>
   );
 }

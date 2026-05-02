@@ -10,7 +10,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="emerals">
       <body>
-        {/* <div className="container mx-auto px-4"> */}
         <div className="max-w-7xl mx-auto px-4">
           <Navbar />
           <main>{children}</main>

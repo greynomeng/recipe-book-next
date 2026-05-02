@@ -1,12 +1,8 @@
 # TODOs
 - ## Recipe New/Edit/Delete
-- Build RecipeForm
-- Build Moddal
-- Delete confirmation modal
-  >Delete causes error in apiCall - 
-  ` json: `
-  `  Object { error: "Failed to delete recipe: ReferenceError: path is not defined" }​
-    error: "Failed to delete recipe: ReferenceError: path is not defined"`
+- Build rest of RecipeForm.
+- ~~Build Moddal~~
+- ~~Delete confirmation modal~~
 ​
 
 
