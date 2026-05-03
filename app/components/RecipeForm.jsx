@@ -9,7 +9,13 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   const isEdit = !!recipe;
   const [form, setForm] = useState({
     name: "",
-    image: ""
+    description: "",
+    image: "",
+    ingredients: "",
+    instructions: "",
+    prepTime: "",
+    cookTime: "",
+    servings: ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -17,6 +23,8 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [ingredients, setIngredients] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -28,9 +36,22 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     if (recipe) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm({
-        name: recipe.name || ""
-        // ...other fields
+        name: recipe.name || "",
+        description: recipe.description || "",
+        ingredients: recipe.ingredients?.join("\n") || "",
+        instructions: recipe.instructions?.join("\n") || "",
+        prepTime: recipe.prepTime || "",
+        cookTime: recipe.cookTime || "",
+        servings: recipe.servings || ""
       });
+
+      if (recipe?.image) {
+        // Prepend storage path
+        const imageUrl = `/images/${recipe.image}`;
+        setImagePreview(imageUrl);
+        // Update form state so the UI knows an image is present
+        setForm((prev) => ({ ...prev, image: recipe.image }));
+      }
     }
   }, [recipe]);
 
@@ -89,11 +110,27 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     try {
       setLoading(true);
 
+      const submissionData = {
+        ...form,
+        ingredients: form.ingredients
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        instructions: form.instructions
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      };
+
       let response;
       if (isEdit) {
-        response = await apiCall(`/api/recipes/${recipe._id}`, "PUT", form);
+        response = await apiCall(
+          `/api/recipes/${recipe._id}`,
+          "PUT",
+          submissionData
+        );
       } else {
-        response = await apiCall("/api/recipes", "POST", form);
+        response = await apiCall("/api/recipes", "POST", submissionData);
       }
 
       if (file) {
@@ -118,10 +155,20 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
     await apiCall("/api/upload", "POST", imageFormData);
   };
 
+  const ingredientCount = String(form.ingredients || "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean).length;
+
+  const instructionCount = String(form.instructions || "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean).length;
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-h-175 overflow-y-auto pr-2 space-y-4 w-full"
+      className="max-h-[80vh] overflow-y-auto p-4 border rounded-lg w-full"
     >
       {error && (
         <div className="alert alert-error py-2 text-sm">
@@ -130,7 +177,7 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
       )}
 
       {/* Grid 2 columns */}
-      <dev className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         {/* Left column */}
         <div>
           <div className="form-control">
@@ -159,9 +206,9 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
                 <Image
                   src={imagePreview}
                   alt="Recipe preview"
-                  className="w-full object-cover rounded-lg"
-                  width={50}
-                  height={50}
+                  className="object-cover rounded-lg"
+                  width={420}
+                  height={350}
                   loading="eager"
                 />
                 <button
@@ -190,7 +237,7 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
             {onCancel && (
               <button
                 type="button"
-                className="btn btn-ghost"
+                className="btn btn-ghost btn-outline"
                 onClick={onCancel}
               >
                 <LuX />
@@ -202,9 +249,99 @@ export default function RecipeForm({ recipe, onSuccess, onCancel }) {
 
         {/* Right column */}
         <div>
-          <h3>Ingedients</h3>
+          <div className="form-control">
+            <label className="label font-semibold">Description</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={(e) => set("description", e.target.value)}
+              className="textarea textarea-bordered w-full mb-4"
+              placeholder="Brief description..."
+              rows="2"
+            />
+          </div>
+
+          <div className="flex items-center justify-between mb-1">
+            <label className="label font-semibold">Ingredients</label>
+            {ingredientCount > 0 && (
+              <span className="badge badge-primary">
+                {ingredientCount} ingredient{ingredientCount !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text mb-1">
+                Enter one ingredient per line
+              </span>
+            </label>
+            <textarea
+              name="ingredients"
+              value={form.ingredients}
+              onChange={(e) => set("ingredients", e.target.value)}
+              className="textarea textarea-bordered w-full mb-4"
+              placeholder=""
+              rows="5"
+            />
+          </div>
+
+          <div className="flex items-center justify-between mb-1">
+            <label className="label font-semibold">Instructions</label>
+            {instructionCount > 0 && (
+              <span className="badge badge-primary">
+                {instructionCount} step{instructionCount !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text  mb-1">Enter one step per line</span>
+            </label>
+            <textarea
+              name="instructions"
+              value={form.instructions}
+              onChange={(e) => set("instructions", e.target.value)}
+              className="textarea textarea-bordered w-full"
+              placeholder=""
+              rows="5"
+            />
+          </div>
+
+          {/* 3 cols for prep, cook and serves */}
+          <div className="grid grid-cols-3 gap-2 mt-4">
+            <div className="form-control">
+              <label className="label font-semibold">Prep time:</label>
+              <input
+                type="text"
+                value={form.prepTime}
+                onChange={(e) => set("prepTime", e.target.value)}
+                className="input input-bordered w-full mb-2"
+                placeholder="Preparation time..."
+              />
+            </div>
+            <div className="form-control">
+              <label className="label font-semibold">Cook time:</label>
+              <input
+                type="text"
+                value={form.cookTime}
+                onChange={(e) => set("cookTime", e.target.value)}
+                className="input input-bordered w-full mb-2"
+                placeholder="Enter cook name..."
+              />
+            </div>
+            <div className="form-control">
+              <label className="label font-semibold">Serves:</label>
+              <input
+                type="text"
+                value={form.servings}
+                onChange={(e) => set("servings", e.target.value)}
+                className="input input-bordered w-full mb-2"
+                placeholder="No. serves..."
+              />
+            </div>
+          </div>
         </div>
-      </dev>
+      </div>
     </form>
   );
 }

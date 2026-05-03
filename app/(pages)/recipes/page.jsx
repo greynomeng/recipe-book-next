@@ -132,7 +132,7 @@ export default function RecipesPage() {
       <Modal
         id="recipe-modal"
         title={selected ? "Edit Recipe" : "Add Recipe"}
-        size="max-w-1/2"
+        size="max-w-1/2 max-h-full"
       >
         <RecipeForm
           key={selected?._id}
